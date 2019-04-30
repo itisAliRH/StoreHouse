@@ -1,7 +1,15 @@
 import sys
 import os
 import time
+import sqlite3
 from subprocess import call
+
+
+def connect_db():
+    clear()
+    conn = sqlite3.connect('af.db')
+    print('Database connected successfully!')
+    time.sleep(1)
 
 
 def clear():
@@ -18,6 +26,15 @@ def main_menu():
         mdata_menu()
     elif choice == 'B' or choice == 'b':
         reports_menu()
+    elif choice == '0':
+        clear()
+        print('if you want to exit, type Yes:')
+        ex = input()
+        if ex == 'Yes':
+            clear()
+            sys.exit()
+        else:
+            main_menu()
     else:
         retry()
         main_menu()
@@ -73,4 +90,5 @@ def retry():
     time.sleep(1)
 
 
+connect_db()
 main_menu()
