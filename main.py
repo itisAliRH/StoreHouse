@@ -13,7 +13,7 @@ def connect_db():
 
 
 def clear():
-    tmp = call('clear' if os.name == 'posix' else 'cls')
+    tmp = call('clear' if os.name == 'posix' else 'cls', shell=True)
 
 
 def main_menu():
