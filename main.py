@@ -21,7 +21,7 @@ def main_menu():
     clear()
     print('*****Main Menu*****', '\n')
     print('Please select:')
-    choice = input("""\nA: Manipulate Data \nB: Reports\n0:Exit\n""")
+    choice = input("""\nA: Manipulate Data \nB: Reports\n0: Exit\n""")
 
     if choice == 'A' or choice == 'a':
         mdata_menu()
@@ -45,7 +45,7 @@ def mdata_menu():
     clear()
     print('*****Manipulate Data Menu*****')
     print('Please select:')
-    choice = input("""\nA: Items\nB: Staffs\nC: Store Houses\nD:Stock\n\n0:Back\n""")
+    choice = input("""\nA: Items\nB: Staffs\nC: Store Houses\nD: Stock\n\n0: Back\n""")
     if choice == 'A' or choice == 'a':
         items_menu()
     elif choice == 'B' or choice == 'b':
@@ -85,7 +85,7 @@ def add_item():
     clear()
     print('%s with price %.2f added successfully!' % (name, price))
     conn.commit()
-    time.sleep(1)
+    time.sleep(2)
     items_menu()
 
 
@@ -116,11 +116,11 @@ def add_staff():
     clear()
     print('%s added successfully!' % name)
     conn.commit()
-    time.sleep(1)
+    time.sleep(2)
     staffs_menu()
 
 
-def del_staff()
+def del_staff():
     staffs_menu()
 
 
@@ -157,7 +157,7 @@ def add_house():
     conn.execute('insert into StoreHouses (City, MID) values (\'%s\',%d)' % (city, mid))
     print('Store House in %s with Management ID %d added successfully!' % (city, mid))
     conn.commit()
-    time.sleep(1)
+    time.sleep(2)
     house_menu()
 
 
@@ -166,7 +166,48 @@ def del_house():
 
 
 def stock_menu():
-    pass
+    clear()
+    print('*****Stock Menu*****')
+    print('Please select:')
+    choice = input("""\nA: Add Stock\nB: Delete\n\n0: Back\n\n""")
+    if choice == 'A' or choice == 'a':
+        add_stock()
+    elif choice == 'B' or choice == 'b':
+        del_stock()
+    elif choice == '0':
+        mdata_menu()
+    else:
+        retry()
+        stock_menu()
+
+
+def add_stock():
+    clear()
+    ID = ''
+    while ID == '':
+        clear()
+        for iid in conn.execute('select ID,Name from Items'):
+            print(iid, end='\t')
+        ID = input('\nItem ID: ')
+    clear()
+    ID = int(ID)
+    SID = ''
+    while SID == '':
+        clear()
+        for sh in conn.execute('select ID,City from StoreHouses'):
+            print(sh, end='\t')
+        SID = input('\nStore House ID: ')
+    SID = int(SID)
+    quantity = ''
+    while quantity == '':
+        clear()
+        quantity = input('Quantity: ')
+    quantity = int(quantity)
+    conn.execute('insert into Stock values (%d,%d,%d)' % (ID, SID, quantity))
+    print('%d item %d added to Store House %d successfully!' % (quantity, ID, SID))
+    conn.commit()
+    time.sleep(2)
+    stock_menu()
 
 
 def reports_menu():
