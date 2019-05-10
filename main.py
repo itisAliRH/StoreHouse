@@ -215,7 +215,60 @@ def reports_menu():
     print('*****Reports Menu*****')
     print('Please Select:')
     choice = input(
-        """\nA: Number of items available in all store houses\nB:Value of each store house\nC:staff names and""")
+        """\nA: Number of items available in all store houses\nB: Value of each store house\nC: Staffs\nD: Items of each city\nE: Total value of items managed by each staff\n0: Back\n""")
+    if choice == 'A' or choice == 'a':
+        report_sum_quan()
+    elif choice == 'B' or choice == 'b':
+        report_store_value()
+    elif choice == 'C' or choice == 'c':
+        report_staffs()
+    elif choice == 'D' or choice == 'd':
+        report_item_city()
+    elif choice == 'E' or choice == 'e':
+        report_staff_value()
+    elif choice == '0':
+        main_menu()
+    else:
+        retry()
+        reports_menu()
+
+
+def report_sum_quan():
+    clear()
+    print("Number of items available in all store houses:")
+    for i in conn.execute('select Name,sum(Quantity) from Items join Stock on (Items.ID = Stock.ID) group by Name'):
+        print(i)
+    tmp = input()
+    reports_menu()
+
+
+def report_store_value():
+    clear()
+    print('Value of each store house:')
+    for i in conn.execute(
+            'select StoreHouses.ID,StoreHouses.City,(Quantity * Price) from Stock join Items on (Items.ID = Stock.ID) join StoreHouses on (Stock.SID = StoreHouses.ID)'):
+        print(i)
+    tmp = input()
+    reports_menu()
+
+
+def report_staffs():
+    clear()
+    print('Staffs name and city:')
+    for i in conn.execute('select Name,City from Staffs join StoreHouses on (Staffs.ID = StoreHouses.MID)'):
+        print(i)
+    tmp = input()
+    reports_menu()
+
+
+def report_staff_value():
+    clear()
+    print('Total value of items managed by each staff:')
+    for i in conn.execute(
+            'select Staffs.Name, sum(Quantity) from Staffs join StoreHouses on (Staffs.ID = StoreHouses.MID) join Stock on (Stock.SID = StoreHouses.ID) group by Staffs.Name'):
+        print(i)
+    tmp = input()
+    reports_menu()
 
 
 def retry():
