@@ -21,7 +21,7 @@ def main_menu():
     clear()
     print('*****Main Menu*****', '\n')
     print('Please select:')
-    choice = input("""\nA: Manipulate Data \nB: Reports\n0: Exit\n""")
+    choice = input("""\nA: Manipulate Data \nB: Reports\n\n0: Exit\n""")
 
     if choice == 'A' or choice == 'a':
         mdata_menu()
@@ -155,6 +155,7 @@ def add_house():
         mid = input('\nManagement ID: ')
     mid = int(mid)
     conn.execute('insert into StoreHouses (City, MID) values (\'%s\',%d)' % (city, mid))
+    clear()
     print('Store House in %s with Management ID %d added successfully!' % (city, mid))
     conn.commit()
     time.sleep(2)
@@ -204,9 +205,14 @@ def add_stock():
         quantity = input('Quantity: ')
     quantity = int(quantity)
     conn.execute('insert into Stock values (%d,%d,%d)' % (ID, SID, quantity))
+    clear()
     print('%d item %d added to Store House %d successfully!' % (quantity, ID, SID))
     conn.commit()
     time.sleep(2)
+    stock_menu()
+
+
+def del_stock():
     stock_menu()
 
 
@@ -215,7 +221,7 @@ def reports_menu():
     print('*****Reports Menu*****')
     print('Please Select:')
     choice = input(
-        """\nA: Number of items available in all store houses\nB: Value of each store house\nC: Staffs\nD: Items of each city\nE: Total value of items managed by each staff\n0: Back\n""")
+        """\nA: Number of items available in all store houses\nB: Value of each store house\nC: Staffs\nD: Total items of each city\nE: Total value of items managed by each staff\n\n0: Back\n""")
     if choice == 'A' or choice == 'a':
         report_sum_quan()
     elif choice == 'B' or choice == 'b':
@@ -255,7 +261,18 @@ def report_store_value():
 def report_staffs():
     clear()
     print('Staffs name and city:')
-    for i in conn.execute('select Name,City from Staffs join StoreHouses on (Staffs.ID = StoreHouses.MID)'):
+    for i in conn.execute(
+            'select Name,City,StoreHouses.ID from Staffs join StoreHouses on (Staffs.ID = StoreHouses.MID)'):
+        print(i)
+    tmp = input()
+    reports_menu()
+
+
+def report_item_city():
+    clear()
+    print('Total items of each city:')
+    for i in conn.execute(
+            'select City,sum(Quantity) from Stock join StoreHouses on (Stock.SID = StoreHouses.ID) group by City'):
         print(i)
     tmp = input()
     reports_menu()
