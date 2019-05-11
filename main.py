@@ -2,6 +2,7 @@ import sys
 import os
 import time
 import sqlite3
+from prettytable import from_db_cursor
 from subprocess import call
 
 
@@ -241,49 +242,45 @@ def reports_menu():
 
 def report_sum_quan():
     clear()
-    print("Number of items available in all store houses:")
-    for i in conn.execute('select Name,sum(Quantity) from Items join Stock on (Items.ID = Stock.ID) group by Name'):
-        print(i)
+    print("Number of items available in all store houses:\n")
+    print(from_db_cursor(
+        conn.execute('select Name,sum(Quantity) from Items join Stock on (Items.ID = Stock.ID) group by Name')))
     tmp = input()
     reports_menu()
 
 
 def report_store_value():
     clear()
-    print('Value of each store house:')
-    for i in conn.execute(
-            'select StoreHouses.ID,StoreHouses.City,(Quantity * Price) from Stock join Items on (Items.ID = Stock.ID) join StoreHouses on (Stock.SID = StoreHouses.ID)'):
-        print(i)
+    print('Value of each store house:\n')
+    print(from_db_cursor(conn.execute(
+        'select StoreHouses.ID,StoreHouses.City,(Quantity * Price) from Stock join Items on (Items.ID = Stock.ID) join StoreHouses on (Stock.SID = StoreHouses.ID)')))
     tmp = input()
     reports_menu()
 
 
 def report_staffs():
     clear()
-    print('Staffs name and city:')
-    for i in conn.execute(
-            'select Name,City,StoreHouses.ID from Staffs join StoreHouses on (Staffs.ID = StoreHouses.MID)'):
-        print(i)
+    print('Staffs name and city:\n')
+    print(from_db_cursor(
+        conn.execute('select Name,City,StoreHouses.ID from Staffs join StoreHouses on (Staffs.ID = StoreHouses.MID)')))
     tmp = input()
     reports_menu()
 
 
 def report_item_city():
     clear()
-    print('Total items of each city:')
-    for i in conn.execute(
-            'select City,sum(Quantity) from Stock join StoreHouses on (Stock.SID = StoreHouses.ID) group by City'):
-        print(i)
+    print('Total items of each city:\n')
+    print(from_db_cursor(conn.execute(
+        'select City,sum(Quantity) from Stock join StoreHouses on (Stock.SID = StoreHouses.ID) group by City')))
     tmp = input()
     reports_menu()
 
 
 def report_staff_value():
     clear()
-    print('Total value of items managed by each staff:')
-    for i in conn.execute(
-            'select Staffs.Name, sum(Quantity) from Staffs join StoreHouses on (Staffs.ID = StoreHouses.MID) join Stock on (Stock.SID = StoreHouses.ID) group by Staffs.Name'):
-        print(i)
+    print('Total value of items managed by each staff:\n')
+    print(from_db_cursor(conn.execute(
+        'select Staffs.Name, sum(Quantity) from Staffs join StoreHouses on (Staffs.ID = StoreHouses.MID) join Stock on (Stock.SID = StoreHouses.ID) group by Staffs.Name')))
     tmp = input()
     reports_menu()
 
