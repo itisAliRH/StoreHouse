@@ -253,7 +253,7 @@ def report_store_value():
     clear()
     print('Value of each store house:\n')
     print(from_db_cursor(conn.execute(
-        'select StoreHouses.ID,StoreHouses.City,(Quantity * Price) from Stock join Items on (Items.ID = Stock.ID) join StoreHouses on (Stock.SID = StoreHouses.ID)')))
+        'select StoreHouses.ID,StoreHouses.City,sum(Quantity * Price) as Total from Stock join Items on (Items.ID = Stock.ID) join StoreHouses on (Stock.SID = StoreHouses.ID) group by StoreHouses.ID')))
     tmp = input()
     reports_menu()
 
